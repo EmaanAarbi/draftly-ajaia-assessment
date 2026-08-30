@@ -43,11 +43,14 @@ TEMPLATES = [{
     ]},
 }]
 WSGI_APPLICATION = "collabdocs.wsgi.application"
-DATABASES = {"default": dj_database_url.config(default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}", conn_max_age=0 if os.environ.get("VERCEL") else 600)}
-if os.environ.get("DATABASE_URL"):
+database_url = os.environ.get("DATABASE_URL") or os.environ.get("STORAGE_URL") or os.environ.get("POSTGRES_URL")
+if database_url:
+    DATABASES = {"default": dj_database_url.parse(database_url, conn_max_age=0 if os.environ.get("VERCEL") else 600)}
     DATABASES["default"].setdefault("OPTIONS", {})
     DATABASES["default"]["OPTIONS"].setdefault("sslmode", "require")
     DATABASES["default"]["OPTIONS"].setdefault("prepare_threshold", None)
+else:
+    DATABASES = {"default": dj_database_url.parse(f"sqlite:///{BASE_DIR / 'db.sqlite3'}")}
 AUTH_PASSWORD_VALIDATORS = []
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"

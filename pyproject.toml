@@ -10,4 +10,4 @@ dependencies = [
 ]
 
 [tool.vercel.scripts]
-build = 'python manage.py collectstatic --noinput && if [ -n "$DATABASE_URL" ]; then python manage.py migrate --noinput; fi'
+build = 'python manage.py collectstatic --noinput && if [ -n "$DATABASE_URL$STORAGE_URL$POSTGRES_URL" ]; then python manage.py migrate --noinput; fi'

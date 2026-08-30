@@ -61,7 +61,7 @@ The test suite verifies that a shared user can edit, an unshared user cannot acc
 
 ## Deployment
 
-Import the GitHub repository into Vercel as a Python project and attach a hosted PostgreSQL database that provides `DATABASE_URL`. The included `pyproject.toml` installs dependencies, collects static assets, and runs migrations during the Vercel build. The application reads Vercel's generated hostname automatically for host and CSRF validation.
+Import the GitHub repository into Vercel as a Python project and attach a hosted PostgreSQL database. The application accepts Vercel/Neon connection variables named `DATABASE_URL`, `STORAGE_URL`, or `POSTGRES_URL`. The included `pyproject.toml` installs dependencies, collects static assets, and runs migrations during the Vercel build. The application reads Vercel's generated hostname automatically for host and CSRF validation.
 
 SQLite remains the zero-configuration local default, but production must set `DATABASE_URL` because Vercel's function filesystem is ephemeral. For a serverless database connection, use a pooled PostgreSQL URL and keep it private in Vercel environment variables.
 
