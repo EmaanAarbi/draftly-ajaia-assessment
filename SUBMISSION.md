@@ -16,7 +16,7 @@
 - `AI_WORKFLOW.md` describing practical AI use and verification
 - `VIDEO_LINK.txt`
 - Automated access and validation tests
-- Render deployment Blueprint
+- Vercel Python deployment configuration
 
 ## Working end to end
 

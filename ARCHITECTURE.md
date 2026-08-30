@@ -6,13 +6,13 @@ The implementation prioritizes one coherent loop: choose a user, create or impor
 
 ## Architecture
 
-Draftly is a Django monolith. Django owns routing, persistence, validation, access checks, HTML rendering, and JSON autosave requests. The browser adds focused interactivity through Quill and a small autosave script. SQLite keeps local setup friction low; `DATABASE_URL` switches production to PostgreSQL without code changes.
+Draftly is a Django monolith. Django owns routing, persistence, validation, access checks, HTML rendering, and JSON autosave requests. The browser adds focused interactivity through Quill and a small autosave script. SQLite keeps local setup friction low; `DATABASE_URL` switches the Vercel deployment to hosted PostgreSQL without code changes.
 
 The `Document` model stores rich-text HTML plus ownership and a many-to-many list of shared users. Every document read or write passes through `accessible_document`, keeping the access rule centralized. Only owners may grant access; both owners and shared users may edit.
 
 ## Deliberate tradeoffs
 
-- **Django monolith over separate SPA/API:** one deployable unit reduced integration and CORS risk under four hours while still exercising frontend, backend, persistence, and access logic.
+- **Django monolith on Vercel over separate SPA/API:** one deployable unit reduced integration and CORS risk under four hours while still exercising frontend, backend, persistence, and access logic.
 - **Seeded identities over authentication:** the prompt permits mocked users. A visible user switcher makes the sharing flow immediately testable.
 - **Debounced autosave over manual save:** it creates a coherent editor experience while limiting writes.
 - **HTML persistence over a custom document schema:** Quill HTML preserves required formatting with much less surface area. Production would sanitize it server-side.

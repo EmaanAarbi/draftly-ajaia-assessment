@@ -10,6 +10,9 @@ CSRF_TRUSTED_ORIGINS = [u for u in os.environ.get("CSRF_TRUSTED_ORIGINS", "").sp
 if render_host := os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
     ALLOWED_HOSTS.append(render_host)
     CSRF_TRUSTED_ORIGINS.append(f"https://{render_host}")
+if vercel_host := os.environ.get("VERCEL_URL"):
+    ALLOWED_HOSTS.append(vercel_host)
+    CSRF_TRUSTED_ORIGINS.append(f"https://{vercel_host}")
 
 INSTALLED_APPS = [
     "django.contrib.admin", "django.contrib.auth", "django.contrib.contenttypes",
@@ -37,7 +40,11 @@ TEMPLATES = [{
     ]},
 }]
 WSGI_APPLICATION = "collabdocs.wsgi.application"
-DATABASES = {"default": dj_database_url.config(default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}", conn_max_age=600)}
+DATABASES = {"default": dj_database_url.config(default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}", conn_max_age=0 if os.environ.get("VERCEL") else 600)}
+if os.environ.get("DATABASE_URL"):
+    DATABASES["default"].setdefault("OPTIONS", {})
+    DATABASES["default"]["OPTIONS"].setdefault("sslmode", "require")
+    DATABASES["default"]["OPTIONS"].setdefault("prepare_threshold", None)
 AUTH_PASSWORD_VALIDATORS = []
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"

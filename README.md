@@ -35,7 +35,7 @@ No password is required. This is an explicit assessment scope decision that make
 - Quill 2 rich-text editor loaded from a public CDN
 - SQLite locally; PostgreSQL in production
 - WhiteNoise and Gunicorn for production delivery
-- Render Blueprint for deployment
+- Vercel Python runtime with hosted PostgreSQL for deployment
 
 ## Local setup
 
@@ -61,7 +61,9 @@ The test suite verifies that a shared user can edit, an unshared user cannot acc
 
 ## Deployment
 
-The included `render.yaml` provisions a Django web service and PostgreSQL database. In Render, create a new Blueprint from the GitHub repository. The application reads Render's generated hostname automatically for host and CSRF validation.
+Import the GitHub repository into Vercel as a Python project and attach a hosted PostgreSQL database that provides `DATABASE_URL`. The included `pyproject.toml` installs dependencies, collects static assets, and runs migrations during the Vercel build. The application reads Vercel's generated hostname automatically for host and CSRF validation.
+
+SQLite remains the zero-configuration local default, but production must set `DATABASE_URL` because Vercel's function filesystem is ephemeral. For a serverless database connection, use a pooled PostgreSQL URL and keep it private in Vercel environment variables.
 
 ## Supported imports
 

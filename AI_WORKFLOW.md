@@ -14,7 +14,7 @@ OpenAI Codex was used as an implementation partner for requirement decomposition
 
 ## Human decisions, changes, and rejected output
 
-- I selected a Django monolith after verifying that Node/npm were unavailable locally. This avoided spending assessment time installing an unfamiliar toolchain and aligned with my demonstrated Django experience.
+- I selected a Django monolith after verifying that Node/npm were unavailable locally. This avoided spending assessment time installing an unfamiliar toolchain and aligned with my demonstrated Django experience. When the initial host required billing details, I adapted the same application to Vercel's supported Python runtime with external PostgreSQL instead of rewriting the product.
 - I rejected real-time collaboration because it was optional and would endanger delivery of persistence, sharing, deployment, tests, and documentation.
 - I chose simulated users because the prompt explicitly permits them and the workflow is easier for reviewers to evaluate without credentials.
 - I constrained imports to UTF-8 `.txt` and `.md` files and escaped their contents rather than accepting broader formats with unverified parsing behavior.
