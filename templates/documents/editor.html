@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ document.title }} · Draftly{% endblock %}
+{% block head %}<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">{% endblock %}
+{% block content %}
+<section class="editor-shell">
+  <div class="editor-topline">
+    <a class="back" href="{% url 'documents:dashboard' %}">← Documents</a>
+    <div id="saveStatus" class="save-status">All changes saved</div>
+    <button class="secondary" id="shareToggle" type="button" {% if not is_owner %}disabled title="Only the owner can share"{% endif %}>Share</button>
+  </div>
+  <div class="title-row">
+    <input id="title" maxlength="160" value="{{ document.title }}" aria-label="Document title">
+    <span class="badge {% if is_owner %}owner{% else %}shared{% endif %}">{% if is_owner %}Owner{% else %}Shared by {{ document.owner.get_full_name }}{% endif %}</span>
+  </div>
+  <div id="editor">{{ document.content|safe }}</div>
+  <div class="editor-footer"><span>Rich text is preserved between sessions</span><span>Last updated {{ document.updated_at|date:"M j, Y · H:i" }} UTC</span></div>
+</section>
+
+{% if is_owner %}
+<div class="modal-backdrop" id="shareModal" hidden>
+  <div class="modal"><button class="modal-close" id="shareClose" type="button">×</button><p class="eyebrow">DOCUMENT ACCESS</p><h2>Share “{{ document.title }}”</h2>
+    <p>Grant edit access to a demo workspace user.</p>
+    <form action="{% url 'documents:share' document.pk %}" method="post">{% csrf_token %}
+      <select name="username" required>{% for user in share_candidates %}<option value="{{ user.username }}">{{ user.get_full_name }}</option>{% endfor %}</select>
+      <button class="primary" type="submit">Grant access</button>
+    </form>
+    <div class="access-list"><strong>People with access</strong><p>{{ document.owner.get_full_name }} · Owner</p>{% for user in document.shared_with.all %}<p>{{ user.get_full_name }} · Can edit</p>{% endfor %}</div>
+  </div>
+</div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<script>
+const quill = new Quill('#editor', {theme:'snow', placeholder:'Start writing…', modules:{toolbar:[[{header:[1,2,3,false]}],['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['clean']]}});
+const title = document.getElementById('title');
+const statusEl = document.getElementById('saveStatus');
+let timer;
+function csrf(){ return document.cookie.split('; ').find(v=>v.startsWith('csrftoken='))?.split('=')[1] || '{{ csrf_token }}'; }
+function queueSave(){ statusEl.textContent='Unsaved changes'; statusEl.className='save-status pending'; clearTimeout(timer); timer=setTimeout(save,700); }
+async function save(){
+  statusEl.textContent='Saving…';
+  try {
+    const response=await fetch('{% url "documents:save" document.pk %}', {method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':csrf()},body:JSON.stringify({title:title.value,content:quill.root.innerHTML})});
+    const data=await response.json(); if(!response.ok) throw new Error(data.error || 'Save failed');
+    statusEl.textContent='All changes saved'; statusEl.className='save-status';
+  } catch(error){ statusEl.textContent=error.message; statusEl.className='save-status error'; }
+}
+title.addEventListener('input',queueSave); quill.on('text-change',queueSave);
+window.addEventListener('beforeunload',e=>{if(statusEl.classList.contains('pending')){e.preventDefault();}});
+const modal=document.getElementById('shareModal');
+document.getElementById('shareToggle')?.addEventListener('click',()=>modal.hidden=false);
+document.getElementById('shareClose')?.addEventListener('click',()=>modal.hidden=true);
+modal?.addEventListener('click',e=>{if(e.target===modal) modal.hidden=true;});
+</script>
+{% endblock %}

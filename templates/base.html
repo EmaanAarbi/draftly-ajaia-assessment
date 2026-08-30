@@ -1,0 +1,22 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Draftly{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'documents/app.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="topbar">
+    <a href="{% url 'documents:dashboard' %}" class="brand"><span>D</span> Draftly</a>
+    {% if current_user %}<div class="user-chip">Viewing as <strong>{{ current_user.get_full_name|default:current_user.username }}</strong></div>{% endif %}
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  {% if messages %}<div class="toasts">{% for message in messages %}<div class="toast {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+</body>
+</html>

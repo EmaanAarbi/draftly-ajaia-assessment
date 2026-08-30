@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Documents · Draftly{% endblock %}
+{% block content %}
+<section class="hero">
+  <div><p class="eyebrow">COLLABORATIVE WORKSPACE</p><h1>Your ideas, organized.</h1><p>Create, format, import, and share documents without the clutter.</p></div>
+  <form action="{% url 'documents:switch_user' %}" method="post" class="switcher">{% csrf_token %}
+    <label for="username">Demo user</label>
+    <select id="username" name="username" onchange="this.form.submit()">
+      {% for user in users %}<option value="{{ user.username }}" {% if user.id == current_user.id %}selected{% endif %}>{{ user.get_full_name }}</option>{% endfor %}
+    </select>
+  </form>
+</section>
+
+{% if messages %}{% endif %}
+<section class="actions-panel">
+  <form action="{% url 'documents:create' %}" method="post">{% csrf_token %}<button class="primary" type="submit">＋ New document</button></form>
+  <form action="{% url 'documents:import' %}" method="post" enctype="multipart/form-data" class="upload-form">{% csrf_token %}
+    <label class="file-button">↑ Import .txt or .md<input type="file" name="file" accept=".txt,.md" required onchange="this.form.submit()"></label>
+    <small>UTF-8, up to 1 MB</small>
+  </form>
+</section>
+
+<section class="document-section">
+  <div class="section-heading"><h2>Owned by you</h2><span>{{ owned|length }} document{{ owned|length|pluralize }}</span></div>
+  <div class="document-grid">
+    {% for doc in owned %}
+      <a class="document-card" href="{% url 'documents:editor' doc.pk %}"><div class="paper-icon">▤</div><h3>{{ doc.title }}</h3><p>Edited {{ doc.updated_at|timesince }} ago</p><span class="badge owner">Owner</span></a>
+    {% empty %}<div class="empty"><h3>No documents yet</h3><p>Create a blank document or import a text file.</p></div>{% endfor %}
+  </div>
+</section>
+
+<section class="document-section">
+  <div class="section-heading"><h2>Shared with you</h2><span>{{ shared|length }} document{{ shared|length|pluralize }}</span></div>
+  <div class="document-grid">
+    {% for doc in shared %}
+      <a class="document-card" href="{% url 'documents:editor' doc.pk %}"><div class="paper-icon shared">◇</div><h3>{{ doc.title }}</h3><p>Owned by {{ doc.owner.get_full_name }}</p><span class="badge shared">Shared</span></a>
+    {% empty %}<div class="empty"><h3>Nothing shared yet</h3><p>Switch users above to demonstrate the sharing flow.</p></div>{% endfor %}
+  </div>
+</section>
+{% endblock %}
