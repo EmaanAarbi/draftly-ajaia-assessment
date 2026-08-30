@@ -13,6 +13,9 @@ if render_host := os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
 if vercel_host := os.environ.get("VERCEL_URL"):
     ALLOWED_HOSTS.append(vercel_host)
     CSRF_TRUSTED_ORIGINS.append(f"https://{vercel_host}")
+if os.environ.get("VERCEL"):
+    ALLOWED_HOSTS.append("draftly-ajaia-assessment.vercel.app")
+    CSRF_TRUSTED_ORIGINS.append("https://draftly-ajaia-assessment.vercel.app")
 
 INSTALLED_APPS = [
     "django.contrib.admin", "django.contrib.auth", "django.contrib.contenttypes",
