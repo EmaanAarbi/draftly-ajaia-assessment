@@ -6,7 +6,10 @@
   <div class="editor-topline">
     <a class="back" href="{% url 'documents:dashboard' %}">← Documents</a>
     <div id="saveStatus" class="save-status">All changes saved</div>
-    <button class="secondary" id="shareToggle" type="button" {% if not is_owner %}disabled title="Only the owner can share"{% endif %}>Share</button>
+    <div class="editor-actions">
+      <button class="secondary" id="saveNow" type="button">Save now</button>
+      <button class="secondary" id="shareToggle" type="button" {% if not is_owner %}disabled title="Only the owner can share"{% endif %}>Share</button>
+    </div>
   </div>
   <div class="title-row">
     <input id="title" maxlength="160" value="{{ document.title }}" aria-label="Document title">
@@ -46,6 +49,7 @@ async function save(){
   } catch(error){ statusEl.textContent=error.message; statusEl.className='save-status error'; }
 }
 title.addEventListener('input',queueSave); quill.on('text-change',queueSave);
+document.getElementById('saveNow').addEventListener('click',()=>{clearTimeout(timer);save();});
 window.addEventListener('beforeunload',e=>{if(statusEl.classList.contains('pending')){e.preventDefault();}});
 const modal=document.getElementById('shareModal');
 document.getElementById('shareToggle')?.addEventListener('click',()=>modal.hidden=false);

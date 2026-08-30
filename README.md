@@ -20,7 +20,7 @@ No password is required. This is an explicit assessment scope decision that make
 
 - Create, rename, save, and reopen documents
 - Rich-text headings, bold, italic, underline, and lists
-- Debounced autosave with visible saving and error states
+- Debounced autosave plus a visible manual Save button, with saving and error states
 - Import UTF-8 `.txt` and `.md` files up to 1 MB
 - Owner and shared-document dashboard sections
 - Owner-controlled sharing with simulated users
