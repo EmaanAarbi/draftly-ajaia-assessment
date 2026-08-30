@@ -4,7 +4,7 @@ Draftly is a deliberately scoped collaborative document workspace built for the 
 
 ## Live application
 
-Add deployed URL here before submission.
+https://draftly-ajaia-assessment.vercel.app/
 
 ## Demo users
 

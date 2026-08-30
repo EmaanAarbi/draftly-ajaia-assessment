@@ -4,8 +4,8 @@
 
 ## Evaluation links
 
-- **Live application:** Add URL
-- **Source repository:** Add URL
+- **Live application:** https://draftly-ajaia-assessment.vercel.app/
+- **Source repository:** https://github.com/EmaanAarbi/draftly-ajaia-assessment
 - **Walkthrough video:** Add URL
 
 ## Included
