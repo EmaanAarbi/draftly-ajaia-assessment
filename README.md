@@ -61,7 +61,7 @@ The test suite verifies that a shared user can edit, an unshared user cannot acc
 
 ## Deployment
 
-The included `render.yaml` provisions a Django web service and PostgreSQL database. In Render, create a new Blueprint from the GitHub repository. If Render assigns a different hostname, update `CSRF_TRUSTED_ORIGINS` to the resulting HTTPS origin.
+The included `render.yaml` provisions a Django web service and PostgreSQL database. In Render, create a new Blueprint from the GitHub repository. The application reads Render's generated hostname automatically for host and CSRF validation.
 
 ## Supported imports
 
